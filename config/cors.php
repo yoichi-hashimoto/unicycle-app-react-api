@@ -20,7 +20,7 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => ['http://localhost:3000',
-    'https://unicycle-app-react-production.up.railway.app',
+    'https://app.unicircle-jp.com',
     ],
 
     'allowed_origins_patterns' => [],
