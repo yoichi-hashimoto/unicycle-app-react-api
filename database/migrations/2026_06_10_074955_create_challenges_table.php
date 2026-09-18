@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('skill_id')->constrained()->cascadeOnDelete();
-            $table->enum('success_score',[0,1,2,3])->default(0);
+            $table->unsignedTinyInteger('success_score')->default(0);
             $table->integer('earned_point')->nullable();
             $table->timestamps();
         });
