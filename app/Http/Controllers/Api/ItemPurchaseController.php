@@ -34,9 +34,13 @@ class ItemPurchaseController
                     abort(422,'already owned');
                 }
 
-                if($user->earned_points < $price){
-                    abort(422, 'lack of point');
-                }
+return response()->json([
+    'user_id' => $user->id,
+    'earned_points' => $user->earned_points,
+    'price' => $price,
+    'item_id' => $item->id,
+]);
+
 
                 Point::create([
                     'user_id'=>$user->id,
