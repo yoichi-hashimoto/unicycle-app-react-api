@@ -19,7 +19,9 @@ class ItemPurchaseController
 
         try{
             DB::transaction(function()use($data,$user){
-                $user =$user->lockForUpdate()->firstOrFail();
+                $user = User::whereKey($user->id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
                 $item = Item::findOrFail($data['item_id']);
 
                 $price = $item->required_point;
