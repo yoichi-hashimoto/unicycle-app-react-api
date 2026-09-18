@@ -15,10 +15,10 @@ class ItemPurchaseController
             'item_id' =>['required','integer','exists:items,id'],
         ]);
 
-        $user = $request->user();
+        $authUser = $request->user();
 
         try{
-            DB::transaction(function()use($data,$user){
+            return DB::transaction(function()use($data,$authUser){
                 $user = User::whereKey($user->id)
                     ->lockForUpdate()
                     ->firstOrFail();
@@ -34,25 +34,26 @@ class ItemPurchaseController
                     abort(422,'already owned');
                 }
 
-return response()->json([
-    'user_id' => $user->id,
-    'earned_points' => $user->earned_points,
-    'price' => $price,
-    'item_id' => $item->id,
-]);
-
+                if($user->earned_points < $price){
+                    abort(422, 'lack of point');
+                }
 
                 Point::create([
                     'user_id'=>$user->id,
                     'points'=>-$price,
                 ]);
                 
-                $user->userItems()->create([
+                $userItem = $user->userItems()->create([
                     'item_id'=>$item->id,
                 ]);
 
                 return response()->json([
                     'message'=>'get the item',
+                    'user_id'=>$user->id,
+                    'earned_points'=>$user->earned_points,
+                    'price'=>$price,
+                    'item_id'=>$item->id,
+                    'user_item'=>$userItem
                 ]);
             });
         }catch(\Throwable $e){
