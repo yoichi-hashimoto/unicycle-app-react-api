@@ -19,7 +19,7 @@ class ItemPurchaseController
 
         try{
             return DB::transaction(function()use($data,$authUser){
-                $user = User::whereKey($user->id)
+                $user = User::whereKey($authUser->id)
                     ->lockForUpdate()
                     ->firstOrFail();
                 $item = Item::findOrFail($data['item_id']);
