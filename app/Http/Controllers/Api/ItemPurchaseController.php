@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Item;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\Point;
 
 class ItemPurchaseController
 {
@@ -35,9 +36,9 @@ class ItemPurchaseController
                     abort(422, 'lack of point');
                 }
 
-                Challenge::create([
+                Point::create([
                     'user_id'=>$user->id,
-                    'earned_point'=>-$price,
+                    'points'=>-$price,
                 ]);
                 
                 $user->userItems()->create([
