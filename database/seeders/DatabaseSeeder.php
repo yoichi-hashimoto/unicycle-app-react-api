@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             AvatarSeeder::class,
             AnimalSeeder::class,
             UserSeeder::class,
-            UserItemsSeeder::class,
+            // UserItemsSeeder::class,
             SkillSeeder::class,
             // ChallengeSeeder::class,
             // LikeSeeder::class,
