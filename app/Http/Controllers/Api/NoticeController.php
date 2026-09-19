@@ -8,7 +8,7 @@ use App\Models\Notice;
 class NoticeController
 {
     public function index(){
-        return Notice::all();}
+        return Notice::latest()->paginate(5);}
 
     public function store(Request $request){
         $validate = $request->validate([
