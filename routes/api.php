@@ -49,6 +49,6 @@ Route::middleware('auth:sanctum','admin')->group(function(){
         Route::post('challenges',[ ChallengeController::class,'store']);
         Route::post('notices',[NoticeController::class,'store']);
         Route::patch('/users/{user}/reset-password',[UserController::class,'resetPassword']);
-        Route::delete('/users/{id}',[UserController::class,'destroy']);
+        Route::delete('/users/{user}',[UserController::class,'destroy']);
 });
 });
