@@ -13,12 +13,9 @@ class NoticeSeeder extends Seeder
      */
     public function run(): void
     {
-        Notice::insert([[
-            'title'=>'アイテム追加',
-            'text'=>'新アイテム「ふえ」が追加されました！'
-        ],[
-            'title'=>'システムアップデート',
-            'text'=>'2026年8月30日12：00～0：00でアップデートを行いますので、システムを開くことはできません。'
-        ]]);
+        Notice::insert([
+            'title'=>'はじめまして！',
+            'text'=>'Uni-Circleの世界へようこそ！　キャラクターや背景、パスワードを自分の好きなものに変更して、一輪車の練習をはじめよう！'
+        ]);
     }
 }

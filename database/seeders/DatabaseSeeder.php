@@ -25,8 +25,8 @@ class DatabaseSeeder extends Seeder
             // ChallengeSeeder::class,
             // LikeSeeder::class,
             NoticeSeeder::class,
-            PointSeeder::class,
-            SkillTipsSeeder::class,
+            // PointSeeder::class,
+            // SkillTipsSeeder::class,
         ]);
     }
 }

@@ -168,36 +168,6 @@ class AvatarSeeder extends Seeder
         ],[
                         'id'=>50,
             'avatar_path' =>'./images/users/avatar_50_r5_c10.png'
-        ],[
-                        'id'=>51,
-            'avatar_path' =>'./images/users/avatar_51_r6_c1.png'
-        ],[
-                        'id'=>52,
-            'avatar_path' =>'./images/users/avatar_52_r6_c2.png'
-        ],[
-                        'id'=>53,
-            'avatar_path' =>'./images/users/avatar_53_r6_c3.png'
-        ],[
-                        'id'=>54,
-            'avatar_path' =>'./images/users/avatar_54_r6_c4.png'
-        ],[
-                        'id'=>55,
-            'avatar_path' =>'./images/users/avatar_55_r6_c5.png'
-        ],[
-                        'id'=>56,
-            'avatar_path' =>'./images/users/avatar_56_r6_c6.png'
-        ],[
-                        'id'=>57,
-            'avatar_path' =>'./images/users/avatar_57_r6_c7.png'
-        ],[
-                        'id'=>58,
-            'avatar_path' =>'./images/users/avatar_58_r6_c8.png'
-        ],[
-                        'id'=>59,
-            'avatar_path' =>'./images/users/avatar_59_r6_c9.png'
-        ],[
-                        'id'=>60,
-            'avatar_path' =>'./images/users/avatar_60_r6_c10.png'
         ]]);
     }
 }
