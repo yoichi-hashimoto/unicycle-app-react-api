@@ -82,10 +82,12 @@ class User extends Authenticatable
         if(!$challenge){
             return 1;
         }
-        return $challenge->success_score >= 3 && $challenge->skill_id>=26
-        ? 26
-        : $challenge->skill_id+1;
-        ;
+
+        if($challenge->success_score >= 3){
+            return min($challenge->skill_id + 1, 26);
+        }
+
+        return $challenge->skill_id;
     }
 
     public function getCurrentAnimalAttribute()
