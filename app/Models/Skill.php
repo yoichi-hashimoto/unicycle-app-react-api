@@ -8,7 +8,7 @@ use App\Models\SkillTip;
 
 class Skill extends Model
 {
-    protected $fillable = ['name', 'description','avatar_path','movie_path','required_level','animal_id','point'];
+    protected $fillable = ['name', 'description','avatar_path','movie_path','required_level','animal_id','point','category'];
 
     public function challenges()
     {
@@ -23,4 +23,5 @@ class Skill extends Model
     public function skillTips(){
         return $this->hasMany(SkillTip::class,'skill_id');
     }
+
 }

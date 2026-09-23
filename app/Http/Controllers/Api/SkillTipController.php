@@ -12,7 +12,7 @@ class SkillTipController
 
         $tips =SkillTip::where('skill_id',$skillId)->with('user')->latest()->get();
         return response()->json($tips);
-    }
+    }   
 
     public function store(Request $request, Skill $skill){
         $validated = $request->validate([
