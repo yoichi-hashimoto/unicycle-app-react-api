@@ -26,6 +26,7 @@ class ChallengeResource extends JsonResource
             'current_animal' => $this->current_animal,
             'background_color' =>$this->user?->background_color,
             'skill_name' => $this->skill_name,
+            'skill_category'=>$this->skill_category,
             'current_level' => $this->current_level,
             'received_likes' => $this->received_likes,
             'from_user_id' => $this->likes()->pluck('from_user_id'),

@@ -50,6 +50,11 @@ class Challenge extends Model
         return $this->skill ? $this->skill->name : null;
     }
 
+    public function getSkillCategoryAttribute()
+    {
+        return $this->skill ? $this->skill->category : null;
+    }
+
     public function getCurrentLevelAttribute()
     {
         return $this->skill ? $this->skill->required_level : null;
