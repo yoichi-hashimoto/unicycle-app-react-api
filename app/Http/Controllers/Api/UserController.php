@@ -53,7 +53,7 @@ class UserController extends Controller
 
        $validate = $request ->validate([
         'name'=>['sometimes','string','max:6'],
-        'current_password'=>['nullable','string','min:8','required_with:password','current_password:web'],
+        'current_password'=>['nullable','string','min:7','required_with:password','current_password:web'],
         'password'=>['nullable','string',Password::min(8),'required_with:current_password','confirmed'],
         'user_avatar_id'=>['sometimes','integer','nullable'],
         'color_id'=>['sometimes','integer','nullable','exists:colors,id'],
