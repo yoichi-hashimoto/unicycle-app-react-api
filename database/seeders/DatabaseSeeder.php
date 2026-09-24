@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
             ColorSeeder::class,
             AvatarSeeder::class,
             AnimalSeeder::class,
-            UserSeeder::class,
             // UserItemsSeeder::class,
             SkillSeeder::class,
             // ChallengeSeeder::class,

@@ -24,7 +24,7 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name'=>$this->name,
             'background_color'=>$this->background_color,
-            'login_id'=>$this->login_id,
+            // 'login_id'=>$this->login_id,
             'is_admin'=>$this->is_admin,
             'avatar_path'=>$this->avatar_path,
             'skill_name'=>$this->skill_name,

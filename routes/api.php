@@ -21,12 +21,12 @@ use App\Http\Resources\UserResource;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Http\Request;
 
-Route::apiResource('users', UserController::class);
-Route::apiResource('skills', SkillController::class);
-Route::apiResource('animals', AnimalController::class);
-Route::apiResource('avatars', AvatarController::class);
-Route::apiResource('colors',ColorController::class);
-Route::apiResource('items', ItemController::class);
+Route::get('users',[UserController::class,'index']);
+Route::get('skills', [SkillController::class,'index']);
+Route::get('animals', [AnimalController::class,'index']);
+Route::get('avatars', [AvatarController::class,'index']);
+Route::get('colors',[ColorController::class,'index']);
+Route::get('items', [ItemController::class,'index']);
 Route::get('challenges',[ChallengeController::class,'index']);
 Route::get('points',[PointController::class,'index']);
 Route::get('notices',[NoticeController::class,'index']);
@@ -49,6 +49,7 @@ Route::middleware('auth:sanctum','admin')->group(function(){
         Route::post('challenges',[ ChallengeController::class,'store']);
         Route::post('notices',[NoticeController::class,'store']);
         Route::patch('/users/{user}/reset-password',[UserController::class,'resetPassword']);
+        Route::post('/users',[UserController::class,'store']);
         Route::delete('/users/{user}',[UserController::class,'destroy']);
 });
 });
