@@ -11,19 +11,4 @@ class SkillController extends Controller
     {
         return Skill::with('challenges:id,user_id,skill_id','skillTips.user.avatar')->get();
     }
-
-    public function store(Request $request)
-    {
-        
-    }
-
-    public function update(Request $request, $id)
-    {
-        
-    }
-
-    public function destroy($id)
-    {
-        
-    }
 }

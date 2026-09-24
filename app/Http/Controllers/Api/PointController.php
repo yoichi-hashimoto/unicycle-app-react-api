@@ -13,6 +13,4 @@ class PointController
         ->groupBy('user_id')
         ->get();
     }
-
-
 }

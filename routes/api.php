@@ -21,21 +21,25 @@ use App\Http\Resources\UserResource;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Http\Request;
 
-Route::get('users',[UserController::class,'index']);
-Route::get('skills', [SkillController::class,'index']);
-Route::get('animals', [AnimalController::class,'index']);
-Route::get('avatars', [AvatarController::class,'index']);
-Route::get('colors',[ColorController::class,'index']);
-Route::get('items', [ItemController::class,'index']);
-Route::get('challenges',[ChallengeController::class,'index']);
-Route::get('points',[PointController::class,'index']);
-Route::get('notices',[NoticeController::class,'index']);
-Route::get('/skill/{skill}/tips',[SkillTipController::class,'index']);
+Route::middleware('guest:sanctum')->group(function(){
+    Route::post('/login',[AuthController::class,'login'])
+    ->middleware('throttle:5,1');
+});
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::apiResource('likes', LikeController::class);
+    Route::get('/users',[UserController::class,'index']);
+    Route::get('/skills', [SkillController::class,'index']);
+    Route::get('/animals', [AnimalController::class,'index']);
+    Route::get('/avatars', [AvatarController::class,'index']);
+    Route::get('/colors',[ColorController::class,'index']);
+    Route::get('/items', [ItemController::class,'index']);
+    Route::get('/challenges',[ChallengeController::class,'index']);
+    Route::get('/notices',[NoticeController::class,'index']);
+    Route::get('/skill/{skill}/tips',[SkillTipController::class,'index']);
+    Route::post('/likes', [LikeController::class, 'store']);
     Route::patch('/users/{user}',[UserController::class,'update']);
     Route::patch('/users/{user}/animal-seen', [UserController::class, 'updateAnimalSeen']);
+    Route::get('/points',[PointController::class,'index']);
     Route::post('/user_item',[ItemPurchaseController::class,'store']);
     Route::patch('/user_item/{userItem}',[UserItemController::class,'update']);
     Route::post('/skill/{skill}/tips',[SkillTipController::class,'store']);

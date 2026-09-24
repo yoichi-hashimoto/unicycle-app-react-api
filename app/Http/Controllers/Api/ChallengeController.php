@@ -46,13 +46,4 @@ class ChallengeController extends Controller
         ],201);
     }
 
-    public function update(Request $request, $id)
-    {
-        
-    }
-
-    public function destroy($id)
-    {
-        
-    }
 }

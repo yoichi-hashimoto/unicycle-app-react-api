@@ -10,8 +10,4 @@ class AvatarController extends Controller
     public function index(){
         return UserAvatar::all();
     }
-
-    public function store(){
-
-    }
 }

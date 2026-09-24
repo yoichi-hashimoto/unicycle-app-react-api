@@ -30,13 +30,4 @@ class LikeController extends Controller
         return response()->json();
     }
 
-    public function update(Request $request, $id)
-    {
-        
-    }
-
-    public function destroy($id)
-    {
-        
-    }
 }

@@ -10,19 +10,4 @@ class AnimalController extends Controller
     {
         return view('/');
     }
-
-    public function store(Request $request)
-    {
-        
-    }
-
-    public function update(Request $request, $id)
-    {
-        
-    }
-
-    public function destroy($id)
-    {
-        
-    }
 }
