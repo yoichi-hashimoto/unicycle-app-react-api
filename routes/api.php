@@ -24,6 +24,7 @@ use Illuminate\Http\Request;
 Route::middleware('guest:sanctum')->group(function(){
     Route::post('/login',[AuthController::class,'login'])
     ->middleware('throttle:5,1');
+    Route::get('/notices',[NoticeController::class,'index']);
 });
 
 Route::middleware('auth:sanctum')->group(function(){
@@ -34,7 +35,6 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/colors',[ColorController::class,'index']);
     Route::get('/items', [ItemController::class,'index']);
     Route::get('/challenges',[ChallengeController::class,'index']);
-    Route::get('/notices',[NoticeController::class,'index']);
     Route::get('/skill/{skill}/tips',[SkillTipController::class,'index']);
     Route::post('/likes', [LikeController::class, 'store']);
     Route::patch('/users/{user}',[UserController::class,'update']);
