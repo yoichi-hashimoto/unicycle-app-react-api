@@ -26,11 +26,11 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request ->validate([
-            'name'=>['string','max:6'],
-            'password'=>['string','min:5','confirmed'],
+            'name'=>['string','max:6','required'],
+            'password'=>['string','min:5','confirmed','required'],
             'user_avatar_id'=>['integer','nullable'],
             'color_id'=>['integer','nullable'],
-            'login_id'=>['string','min:6','max:8'],
+            'login_id'=>['string','min:6','max:8','required','unique:users,login_id'],
         ]);
         
         $user = new User();
