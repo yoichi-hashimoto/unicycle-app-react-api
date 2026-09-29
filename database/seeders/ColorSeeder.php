@@ -13,7 +13,7 @@ class ColorSeeder extends Seeder
      */
     public function run(): void
     {
-        Color::insert([[
+        $colors = [[
             'id'=>1,
             'name'=>'しろ',
             'color_path'=>'#FFFFFF'
@@ -41,7 +41,20 @@ class ColorSeeder extends Seeder
             'id'=>7,
             'name'=>'くろ',
             'color_path'=>'#000000'
-        ]
-        ]);
+        ],[
+            'id'=>8,
+            'name'=>'そらグラデーション',
+            'color_path'=>'linear-gradient(135deg, #dff6ff 0%, #7dd3fc 100%)',
+        ],[
+            'id'=>9,
+            'name'=>'ゆうやけグラデーション',
+            'color_path'=>'linear-gradient(135deg, #fff1b8 0%, #ff9a8b 55%, #ff6a88 100%)',
+        ],[
+            'id'=>10,
+            'name'=>'もりグラデーション',
+            'color_path'=>'linear-gradient(135deg, #e8ffd8 0%, #7bd389 100%)',
+        ]];
+
+        Color::upsert($colors, ['id'], ['name', 'color_path']);
     }
 }

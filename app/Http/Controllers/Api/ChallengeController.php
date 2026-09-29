@@ -12,7 +12,9 @@ class ChallengeController extends Controller
 {
         public function index()
     {
-        return ChallengeResource::collection(Challenge::with(['user', 'skill', 'likes'])->latest()->get());
+        return ChallengeResource::collection(
+            Challenge::with(['user', 'skill', 'likes.fromUser.avatar'])->latest()->get()
+        );
     }
 
     public function store(Request $request ,Challenge $challenge)

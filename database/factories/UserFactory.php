@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 /**
  * @extends Factory<User>
@@ -25,21 +24,28 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'name' => fake()->unique()->lexify('??????'),
+            'login_id' => fake()->unique()->bothify('OUC####'),
             'password' => static::$password ??= Hash::make('password'),
-            'avatar_path' => fake()->imageUrl(),
-            'background_color' => fake()->hexColor(),
-            'remember_token' => Str::random(10),
+            'user_avatar_id' => null,
+            'color_id' => null,
+            'role' => 'member',
+            'beginner_mode' => false,
+            'beginner_step' => 1,
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
+    public function admin(): static
     {
         return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
+            'role' => 'admin',
+        ]);
+    }
+
+    public function guardian(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'gurdian',
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserRole;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,7 @@ class AdminMiddleware
             abort(401, 'Unauthorized'); 
         }
 
-        if(!$request->user()->is_admin){
+        if($request->user()->role !== UserRole::Admin){
             abort(403, 'Forbidden'); 
         }
         

@@ -37,7 +37,7 @@ class Challenge extends Model
 
     public function getCurrentAnimalAttribute()
     {
-        return $this->user && $this->user->current_animal->avatar_path ? $this->user->current_animal->avatar_path : null;
+        return $this->user?->display_animal_path;
     }
 
     public function getColorPathAttribute(){

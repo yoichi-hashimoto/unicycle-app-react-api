@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Models\SkillTip;
 use App\Models\Skill;
+use App\Models\SkillTipRead;
 
 class SkillTipController
 {
@@ -27,5 +28,18 @@ class SkillTipController
         return response()->json(
             $tip->load('user.avatar'),201
         );
+    }
+
+    public function markRead(Request $request, Skill $skill)
+    {
+        SkillTipRead::updateOrCreate(
+            [
+                'user_id' => $request->user()->id,
+                'skill_id' => $skill->id,
+            ],
+            ['last_read_at' => now()],
+        );
+
+        return response()->noContent();
     }
 }

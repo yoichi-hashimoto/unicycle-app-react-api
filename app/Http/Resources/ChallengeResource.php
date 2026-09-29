@@ -30,10 +30,14 @@ class ChallengeResource extends JsonResource
             'current_level' => $this->current_level,
             'received_likes' => $this->received_likes,
             'from_user_id' => $this->likes()->pluck('from_user_id'),
+            'like_users' => $this->likes->map(fn ($like) => [
+                'id' => $like->fromUser?->id,
+                'name' => $like->fromUser?->name,
+                'avatar_path' => $like->fromUser?->avatar_path,
+            ])->filter(fn ($liker) => $liker['id'] !== null)->values(),
             'is_liked_by_me'=> $this->likes()
             ->where('from_user_id',$request->user()?->id)
             ->exists(),
-            'debug_auth' => $request->user()?->id,
             'color_path' => $this->color_path,
             'equipped_item_path' => $this->equipped_item_path,
         ];

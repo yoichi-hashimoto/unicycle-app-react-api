@@ -20,12 +20,17 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $base = [
             'id' => $this->id,
             'name'=>$this->name,
-            'background_color'=>$this->background_color,
-            // 'login_id'=>$this->login_id,
-            'is_admin'=>$this->is_admin,
+            'role' => $this->role->value,
+        ];
+
+        if (! $this->hasMemberProfile()) {
+            return $base;
+        }
+
+        return $base + [
             'avatar_path'=>$this->avatar_path,
             'skill_name'=>$this->skill_name,
             'received_likes' => $this->received_likes,
@@ -38,6 +43,9 @@ class UserResource extends JsonResource
             'earned_points'=>$this->earned_points,
             'user_items' =>$this->user_item,
             'current_animal' => $this->current_animal,
+            'display_animal' => $this->display_animal,
+            'beginner_mode' => $this->beginner_mode,
+            'beginner_step' => $this->beginner_step,
             'remain_skills'=>$this->remain_skills,
             'last_seen_animal'=>$this->lastSeenAnimal,
         ];

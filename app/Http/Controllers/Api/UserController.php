@@ -2,18 +2,26 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\UserRole;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UsersResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users=User::all();    
+        $users = User::query()
+            ->when(
+                ! ($request->user()->isAdmin() && $request->boolean('include_guardians')),
+                fn ($query) => $query->where('role', '!=', UserRole::Gurdian->value),
+            )
+            ->get();
+
         return UserResource::collection($users);
     }
 
@@ -28,7 +36,8 @@ class UserController extends Controller
         $validated = $request ->validate([
             'name'=>['string','max:6','required'],
             'password'=>['string','min:5','confirmed','required'],
-            'user_avatar_id'=>['integer','nullable'],
+            'role' => ['required', Rule::in(UserRole::values())],
+            'user_avatar_id'=>['integer','nullable', 'required_unless:role,gurdian', 'exists:user_avatars,id'],
             'color_id'=>['integer','nullable'],
             'login_id'=>['string','min:6','max:8','required','unique:users,login_id'],
         ]);
@@ -38,8 +47,13 @@ class UserController extends Controller
         $user->name = $validated['name'];
         $user->password = Hash::make($validated['password']);
         $user->login_id = $validated['login_id'];
-        $user->user_avatar_id = $validated['user_avatar_id'];
-        $user->color_id = $validated['color_id'];
+        $user->role = $validated['role'];
+        $user->user_avatar_id = $validated['role'] === UserRole::Gurdian->value
+            ? null
+            : $validated['user_avatar_id'];
+        $user->color_id = $validated['role'] === UserRole::Gurdian->value
+            ? null
+            : ($validated['color_id'] ?? null);
 
        $user->save();
 
@@ -88,6 +102,8 @@ class UserController extends Controller
     }
 
     public function updateAnimalSeen(Request $request ,User $user){
+        abort_unless($request->user()->id === $user->id || $request->user()->isAdmin(), 403);
+
         $request->validate([
             'last_seen_animal_id'=>[
                 'nullable',
@@ -114,6 +130,8 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        abort_if(request()->user()->id === $user->id, 422, '自分自身は削除できません。');
+
         $user->delete();
 
         return response()->json([

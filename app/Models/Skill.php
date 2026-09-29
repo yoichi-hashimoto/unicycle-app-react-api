@@ -24,4 +24,9 @@ class Skill extends Model
         return $this->hasMany(SkillTip::class,'skill_id');
     }
 
+    public function tipReads()
+    {
+        return $this->hasMany(SkillTipRead::class, 'skill_id');
+    }
+
 }

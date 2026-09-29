@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use App\Models\Challenge;
 use App\Models\Like;
 
 class LikeController extends Controller
@@ -12,22 +13,22 @@ class LikeController extends Controller
         return view('/');
     }
 
-    public function store(Request $request, Like $like)
+    public function store(Request $request)
     {
         $validated = $request-> validate([
-        'challenge_id' => 'integer',
-        'user_id' => 'integer',
-        'from_user_id' => 'integer',
+            'challenge_id' => ['required', 'integer', 'exists:challenges,id'],
         ]);
 
-        Like::firstOrCreate([
-    'challenge_id' => $validated['challenge_id'],
-    'from_user_id' => $validated['from_user_id'],
-], [
-    'user_id' => $validated['user_id'],
-]);
+        $challenge = Challenge::findOrFail($validated['challenge_id']);
 
-        return response()->json();
+        Like::firstOrCreate([
+            'challenge_id' => $challenge->id,
+            'from_user_id' => $request->user()->id,
+        ], [
+            'user_id' => $challenge->user_id,
+        ]);
+
+        return response()->json([], 201);
     }
 
 }

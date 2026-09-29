@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserRole;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -12,13 +13,21 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\UserAvatar;
 use App\Models\Animal;
 use App\Models\UserItem;
-use App\Models\Items;
 use App\Models\Challenge;
 use App\Models\Skill;
 use App\Models\SkillTip;
 use App\Models\Point;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable([
+    'name',
+    'login_id',
+    'password',
+    'user_avatar_id',
+    'color_id',
+    'role',
+    'beginner_mode',
+    'beginner_step',
+])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -35,10 +44,12 @@ class User extends Authenticatable
         return [
             'name' => 'string',
             'color_id' => 'integer',
-            'login_id'=>'integer',
+            'login_id'=>'string',
             'user_avatar_id' =>'integer',
             'password' => 'hashed',
-            'is_admin' =>'boolean',
+            'role' => UserRole::class,
+            'beginner_mode' => 'boolean',
+            'beginner_step' => 'integer',
             'equipped_item_id'=>'boolean',
             'last_seen_animal_id' =>'integer',
         ];
@@ -47,6 +58,21 @@ class User extends Authenticatable
     public function challenges()
     {
         return $this->hasMany(Challenge::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === UserRole::Admin;
+    }
+
+    public function isGuardian(): bool
+    {
+        return $this->role === UserRole::Gurdian;
+    }
+
+    public function hasMemberProfile(): bool
+    {
+        return ! $this->isGuardian();
     }
 
     public function likes()
@@ -70,6 +96,46 @@ class User extends Authenticatable
     public function getAvatarPathAttribute(){
         $avatar = UserAvatar::where('id',$this->user_avatar_id)->first(); 
         return $avatar ? $avatar->avatar_path:null;
+    }
+
+    public function getBeginnerAvatarPathAttribute(): ?string
+    {
+        if (! $this->beginner_mode || $this->beginner_step >= 6) {
+            return null;
+        }
+
+        $paths = [
+            1 => './images/animals/beginner/stage-01-egg.webp',
+            2 => './images/animals/beginner/stage-02-small-crack.webp',
+            3 => './images/animals/beginner/stage-03-large-crack.webp',
+            4 => './images/animals/beginner/stage-04-peeking.webp',
+            5 => './images/animals/beginner/stage-05-limbs.webp',
+        ];
+
+        return $paths[$this->beginner_step] ?? $paths[1];
+    }
+
+    public function getDisplayAnimalAttribute(): ?array
+    {
+        if ($this->beginner_avatar_path) {
+            return [
+                'id' => null,
+                'name' => 'たまご',
+                'avatar_path' => $this->beginner_avatar_path,
+                'avatar_path_walk' => $this->beginner_avatar_path,
+                'required_level' => 0,
+                'beginner_step' => $this->beginner_step,
+            ];
+        }
+
+        $animal = $this->current_animal;
+
+        return $animal ? $animal->toArray() : null;
+    }
+
+    public function getDisplayAnimalPathAttribute(): ?string
+    {
+        return $this->beginner_avatar_path ?: $this->current_animal?->avatar_path;
     }
 
     public function getCurrentLevelAttribute()
@@ -167,6 +233,11 @@ class User extends Authenticatable
     
     public function skillTips(){
         return $this->hasMany(SkillTip::class,'user_id');
+    }
+
+    public function skillTipReads()
+    {
+        return $this->hasMany(SkillTipRead::class, 'user_id');
     }
 
 }
