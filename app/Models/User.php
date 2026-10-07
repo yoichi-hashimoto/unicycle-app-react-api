@@ -35,7 +35,7 @@ class User extends Authenticatable
         return [
             'name' => 'string',
             'color_id' => 'integer',
-            'login_id'=>'integer',
+            'login_id'=>'string',
             'user_avatar_id' =>'integer',
             'password' => 'hashed',
             'is_admin' =>'boolean',
@@ -167,6 +167,24 @@ class User extends Authenticatable
     
     public function skillTips(){
         return $this->hasMany(SkillTip::class,'user_id');
+    }
+
+    public function store(Request $request){
+        $validated = $request->validate([
+            'name'=>['string','max:6','required'],
+            'password'=>['string','min:5','confirmed','required'],
+            'user_avatar_id'=>['integer','nullable'],
+            'color_id'=>['integer','nullable'],
+            'login_id'=>['string','min:6','max:8','required','unique:users,login_id'],
+        ]);
+
+        return User::create([
+            'name'=>$validated['name'],
+            'login_id'=>$validated['login_id'],
+            'password'=>Hash::make($validated['password']),
+            'user_avatar_id'=>$validated['user_avatar_id'],
+            'color_id'=>$validated['color_id'],
+        ]);
     }
 
 }
