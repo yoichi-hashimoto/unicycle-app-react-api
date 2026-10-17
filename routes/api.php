@@ -58,6 +58,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/skill-tips/{tip}/likes', [SkillTipController::class, 'like']);
         Route::get('/profile/activity', [ProfileActivityController::class, 'index']);
         Route::patch('/user/beginner-progress', [BeginnerProgressController::class, 'update']);
+        Route::patch('/user/skill-target', [SkillController::class, 'target']);
     });
 
     Route::middleware('admin')->group(function(){

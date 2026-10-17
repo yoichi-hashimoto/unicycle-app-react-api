@@ -86,5 +86,6 @@ class SkillSeeder extends Seeder
                 'updated_at',
             ]
         );
+        \App\Support\SkillRoadmapCatalog::apply();
     }
 }

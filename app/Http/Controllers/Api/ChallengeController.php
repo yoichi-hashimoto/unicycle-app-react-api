@@ -7,6 +7,10 @@ use App\Models\Challenge;
 use App\Http\Resources\ChallengeResource;
 use App\Models\Point;
 use Illuminate\Support\Facades\DB;
+use App\Models\Skill;
+use App\Models\User;
+use App\Http\Resources\UserResource;
+use Illuminate\Validation\ValidationException;
 
 class ChallengeController extends Controller
 {
@@ -17,35 +21,37 @@ class ChallengeController extends Controller
         );
     }
 
-    public function store(Request $request ,Challenge $challenge)
+    public function store(Request $request)
     {
         $validate = $request->validate([
-            'user_id' => ["integer"],
-            'success_score' => ["integer"],
-            'skill_id'=>["integer"],
-            'earned_point'=>["integer"],
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'success_score' => ['required', 'integer', 'between:0,3'],
+            'skill_id' => ['required', 'integer', 'exists:skills,id'],
         ]);
-
-        DB::transaction(function() use($challenge,$validate){
-
-        $challenge->user_id = $validate['user_id'];
-        $challenge->skill_id = $validate['skill_id'];
-        $challenge->success_score = $validate['success_score'];
-        $challenge->save();
-
-        if(!empty ($validate['earned_point'])){
-            $point = new Point;
-
-            $point->user_id =$validate['user_id'];
-            $point->points = $validate['earned_point'];
-
-            $point->save();
+        $validate['success_score'] = (int) $validate['success_score'];
+        return DB::transaction(function () use ($validate) {
+            $user = User::whereKey($validate['user_id'])->lockForUpdate()->firstOrFail();
+            if ($user->isGuardian()) throw ValidationException::withMessages(['user_id' => '閲覧者は検定を受けられません。']);
+            $skill = Skill::with('prerequisites')->findOrFail($validate['skill_id']);
+            $roadmap = $user->roadmap();
+            if ($reason = $roadmap->lockedReason($skill)) throw ValidationException::withMessages(['skill_id' => $reason]);
+            $wasCleared = $roadmap->isCleared($skill);
+            $challenge = Challenge::create($validate);
+            $awarded = 0;
+            if ($validate['success_score'] === 3 && ! $wasCleared && ! \App\Services\SkillRoadmap::isBasic($skill) && $skill->point > 0) {
+                $point = Point::firstOrCreate(['source_key' => "skill:{$user->id}:{$skill->id}"], [
+                    'user_id' => $user->id, 'points' => (int) $skill->point,
+                ]);
+                $awarded = $point->wasRecentlyCreated ? (int) $point->points : 0;
             }
-    });
-
-        return response()->json([
-            'message'=>'チャレンジを登録しました'
-        ],201);
+            if ($validate['success_score'] === 3 && $user->target_skill_id === $skill->id) $user->update(['target_skill_id' => null]);
+            return response()->json([
+                'message' => 'チャレンジを登録しました',
+                'challenge' => new ChallengeResource($challenge),
+                'points_awarded' => $awarded,
+                'user' => new UserResource($user->fresh()),
+            ], 201);
+        });
     }
 
 }

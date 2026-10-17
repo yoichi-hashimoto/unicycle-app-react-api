@@ -18,6 +18,7 @@ use App\Models\Challenge;
 use App\Models\Skill;
 use App\Models\SkillTip;
 use App\Models\Point;
+use App\Services\SkillRoadmap;
 
 #[Fillable([
     'name',
@@ -29,10 +30,20 @@ use App\Models\Point;
     'role',
     'beginner_mode',
     'beginner_step',
+    'target_skill_id',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
+    private ?SkillRoadmap $roadmapSnapshot = null;
+
+    public function roadmap(): SkillRoadmap { return $this->roadmapSnapshot ??= new SkillRoadmap($this); }
+
+    public function refresh()
+    {
+        $this->roadmapSnapshot = null;
+        return parent::refresh();
+    }
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -53,6 +64,7 @@ class User extends Authenticatable
             'role' => UserRole::class,
             'beginner_mode' => 'boolean',
             'beginner_step' => 'integer',
+            'target_skill_id' => 'integer',
             'equipped_item_id'=>'boolean',
             'last_seen_animal_id' =>'integer',
         ];
@@ -143,20 +155,7 @@ class User extends Authenticatable
 
     public function getCurrentLevelAttribute()
     {
-        $challenge = Challenge::where('user_id',$this->id)
-        ->where('skill_id','<',26)
-        ->orderByDesc('id')->first();
-
-
-        if(!$challenge){
-            return 1;
-        }
-
-        if($challenge->success_score >= 3){
-            return min($challenge->skill_id + 1, 26);
-        }
-
-        return $challenge->skill_id;
+        return $this->roadmap()->currentLevel();
     }
 
     public function getCurrentAnimalAttribute()
@@ -182,20 +181,12 @@ class User extends Authenticatable
 
 
     public function getSkillNameAttribute(){
-        return Skill::where('required_level',$this->current_level)->first()->name ?? null;
+        return $this->roadmap()->currentSkill()?->name;
     }
 
     public function getSuccessScoreAttribute(){
-        $challenge = Challenge::where('user_id',$this->id)
-        ->latest()->first();
-
-        if(!$challenge){
-            return 0;
-        }
-
-        return $challenge->success_score >= 3
-        ? $challenge->success_score=0
-        : $challenge->success_score;
+        $skill = $this->roadmap()->currentSkill();
+        return $skill ? min(3, $this->roadmap()->state($skill)['success_score']) : 0;
     }
 
     public function getEarnedPointsAttribute(){
@@ -216,17 +207,9 @@ class User extends Authenticatable
     }
 
     public function getRemainSkillsAttribute(){
-        $basicSkill = $this->current_level <= 25 ?
-            Skill::where('required_level','=',$this->current_level)
-            ->first() :collect();
-
-        $nextSkill = Skill::whereIn('category',['ソロ中級','ペア'])->whereDoesntHave('challenges',function($query){
-            $query->where('user_id',$this->id);
-        })->get();
-
         return [
-            'basic_skill' =>$basicSkill,
-            'next_skill'=>$nextSkill,
+            'basic_skill' => $this->current_level <= 25 ? $this->roadmap()->currentSkill() : null,
+            'next_skill' => $this->roadmap()->availableAdvanced(),
         ];
     }
 

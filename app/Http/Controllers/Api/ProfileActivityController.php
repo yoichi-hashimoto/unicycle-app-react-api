@@ -37,10 +37,13 @@ class ProfileActivityController extends Controller
         $lastChallengeAt = $challenges->first()?->created_at;
 
         $level = 1;
+        $clearedLevels = [];
         $history = collect([['at' => $user->created_at->toIso8601String(), 'level' => 1]]);
         foreach ($challenges->sortBy(fn ($challenge) => sprintf('%s-%020d', $challenge->created_at->format('Y-m-d H:i:s.u'), $challenge->id)) as $challenge) {
-            if ($challenge->skill_id >= 26) continue;
-            $next = $challenge->success_score >= 3 ? min($challenge->skill_id + 1, 26) : $challenge->skill_id;
+            if (! $challenge->skill || ! \App\Services\SkillRoadmap::isBasic($challenge->skill)) continue;
+            if ($challenge->success_score >= 3) $clearedLevels[(int) $challenge->skill->required_level] = true;
+            $next = 1;
+            while ($next <= 25 && isset($clearedLevels[$next])) $next++;
             if ($next !== $level) {
                 $level = $next;
                 $history->push(['at' => $challenge->created_at->toIso8601String(), 'level' => $level]);
