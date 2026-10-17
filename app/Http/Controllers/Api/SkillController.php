@@ -13,7 +13,7 @@ class SkillController extends Controller
         $reads = SkillTipRead::where('user_id', $request->user()->id)
             ->pluck('last_read_at', 'skill_id');
 
-        return Skill::with('challenges:id,user_id,skill_id', 'skillTips.user.avatar')
+        return Skill::with('challenges:id,user_id,skill_id', 'skillTips.user.avatar', 'skillTips.likes')
             ->get()
             ->each(function (Skill $skill) use ($reads, $request) {
                 $lastReadAt = $reads->get($skill->id);

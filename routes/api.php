@@ -22,11 +22,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Resources\UserResource;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\PracticeController;
+
+Route::get('/notices',[NoticeController::class,'index']);
 
 Route::middleware('guest:sanctum')->group(function(){
     Route::post('/login',[AuthController::class,'login'])
     ->middleware('throttle:5,1');
-    Route::get('/notices',[NoticeController::class,'index']);
 });
 
 Route::middleware('auth:sanctum')->group(function(){
@@ -53,11 +55,14 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/user_item',[ItemPurchaseController::class,'store']);
         Route::patch('/user_item/{userItem}',[UserItemController::class,'update']);
         Route::post('/skill/{skill}/tips',[SkillTipController::class,'store']);
+        Route::post('/skill-tips/{tip}/likes', [SkillTipController::class, 'like']);
         Route::get('/profile/activity', [ProfileActivityController::class, 'index']);
         Route::patch('/user/beginner-progress', [BeginnerProgressController::class, 'update']);
     });
 
     Route::middleware('admin')->group(function(){
+        Route::get('/practices', [PracticeController::class, 'index']);
+        Route::put('/practices/{practice}/attendance/{user}', [PracticeController::class, 'update']);
         Route::post('challenges',[ ChallengeController::class,'store']);
         Route::post('notices',[NoticeController::class,'store']);
         Route::patch('/users/{user}/reset-password',[UserController::class,'resetPassword']);

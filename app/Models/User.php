@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use App\Models\UserAvatar;
 use App\Models\Animal;
 use App\Models\UserItem;
@@ -20,6 +21,7 @@ use App\Models\Point;
 
 #[Fillable([
     'name',
+    'club_name',
     'login_id',
     'password',
     'user_avatar_id',
@@ -32,7 +34,7 @@ use App\Models\Point;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * Get the attributes that should be cast.
@@ -43,6 +45,7 @@ class User extends Authenticatable
     {
         return [
             'name' => 'string',
+            'club_name' => 'string',
             'color_id' => 'integer',
             'login_id'=>'string',
             'user_avatar_id' =>'integer',
@@ -169,7 +172,7 @@ class User extends Authenticatable
 
     public function getReceivedLikesAttribute()
     {
-        return $this->likes()->count();
+        return $this->likes()->count() + SkillTipLike::where('user_id', $this->id)->count();
     }
 
     public function getRemainLevelAttribute()

@@ -23,6 +23,7 @@ class UserResource extends JsonResource
         $base = [
             'id' => $this->id,
             'name'=>$this->name,
+            'club_name' => $this->club_name,
             'role' => $this->role->value,
         ];
 
@@ -42,7 +43,7 @@ class UserResource extends JsonResource
             'equipped_item_path' => $this->equipped_item_path,
             'earned_points'=>$this->earned_points,
             'user_items' =>$this->user_item,
-            'current_animal' => $this->current_animal,
+            'current_animal' => $this->display_animal,
             'display_animal' => $this->display_animal,
             'beginner_mode' => $this->beginner_mode,
             'beginner_step' => $this->beginner_step,

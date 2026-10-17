@@ -35,6 +35,7 @@ class UserController extends Controller
     {
         $validated = $request ->validate([
             'name'=>['string','max:6','required'],
+            'club_name' => ['nullable', 'string', 'max:100'],
             'password'=>['string','min:5','confirmed','required'],
             'role' => ['required', Rule::in(UserRole::values())],
             'user_avatar_id'=>['integer','nullable', 'required_unless:role,gurdian', 'exists:user_avatars,id'],
@@ -45,6 +46,7 @@ class UserController extends Controller
         $user = new User();
 
         $user->name = $validated['name'];
+        $user->club_name = $validated['club_name'] ?? null;
         $user->password = Hash::make($validated['password']);
         $user->login_id = $validated['login_id'];
         $user->role = $validated['role'];
@@ -67,6 +69,7 @@ class UserController extends Controller
 
        $validate = $request ->validate([
         'name'=>['sometimes','string','max:6'],
+        'club_name' => ['sometimes', 'nullable', 'string', 'max:100'],
         'current_password'=>['nullable','string','min:7','required_with:password','current_password:web'],
         'password'=>['nullable','string',Password::min(8),'required_with:current_password','confirmed'],
         'user_avatar_id'=>['sometimes','integer','nullable'],
@@ -82,6 +85,10 @@ class UserController extends Controller
 
        if(array_key_exists('name', $validate)){
         $user->name = $validate['name'];
+       }
+
+       if(array_key_exists('club_name', $validate)){
+        $user->club_name = $validate['club_name'];
        }
 
        if(array_key_exists('user_avatar_id', $validate)){

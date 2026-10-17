@@ -99,7 +99,7 @@ class BetaFeaturesTest extends TestCase
             ->assertJsonPath('0.unread_tip_count', 0);
     }
 
-    public function test_profile_activity_contains_challenges_likes_and_comments(): void
+    public function test_profile_activity_retains_history_likes_and_comments_without_challenge_post_events(): void
     {
         $member = User::factory()->create(['name' => '本人']);
         $supporter = User::factory()->create(['name' => '応援者']);
@@ -128,7 +128,10 @@ class BetaFeaturesTest extends TestCase
             ->assertJsonPath('challenges.0.received_likes', 1)
             ->assertJsonPath('challenges.0.like_users.0.name', '応援者')
             ->assertJsonFragment(['type' => 'like_received'])
-            ->assertJsonFragment(['type' => 'skill_tip']);
+            ->assertJsonFragment(['type' => 'skill_tip'])
+            ->assertJsonMissing(['type' => 'challenge'])
+            ->assertJsonCount(2, 'activities')
+            ->assertJsonCount(1, 'challenges');
     }
 
     private function createSkill(): Skill

@@ -22,6 +22,7 @@ class ChallengeResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'user_name' => $this->user_name,
+            'club_name' => $this->user?->club_name,
             'user_avatar_path' => $this->user_avatar_path,
             'current_animal' => $this->current_animal,
             'background_color' =>$this->user?->background_color,

@@ -15,7 +15,8 @@ class NoticeSeeder extends Seeder
     {
         Notice::insert([
             'title'=>'はじめまして！',
-            'text'=>'Uni-Circleの世界へようこそ！　キャラクターや背景、パスワードを自分の好きなものに変更して、一輪車の練習をはじめよう！'
+            'text'=>'Uni-Circleの世界へようこそ！　キャラクターや背景、パスワードを自分の好きなものに変更して、一輪車の練習をはじめよう！',
+            'category' => 'その他', 'created_at' => now(), 'updated_at' => now(),
         ]);
     }
 }

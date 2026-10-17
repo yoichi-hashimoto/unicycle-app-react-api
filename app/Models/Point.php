@@ -8,7 +8,7 @@ use App\Models\User;
 class Point extends Model
 {
     protected $fillable = [
-'user_id','points','created_at','updated_at',
+'user_id','points','source_key','created_at','updated_at',
     ];
     
 

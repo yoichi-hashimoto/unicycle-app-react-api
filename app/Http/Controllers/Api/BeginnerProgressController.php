@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class BeginnerProgressController extends Controller
 {
@@ -15,6 +16,12 @@ class BeginnerProgressController extends Controller
         ]);
 
         $user = $request->user();
+        if ($validated['enabled'] && $user->beginner_mode
+            && $validated['step'] > $user->beginner_step + 1) {
+            throw ValidationException::withMessages([
+                'step' => '初心者コースは一つずつ進めてください。',
+            ]);
+        }
         $user->beginner_mode = $validated['enabled'];
         $user->beginner_step = $validated['enabled']
             ? max((int) $user->beginner_step, (int) $validated['step'])
