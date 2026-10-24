@@ -94,6 +94,8 @@ class UserController extends Controller
                 'exists:animals,id'
             ],]);
 
+        $user = auth()->user();
+        abort_unless((int) $userItem->user_id === (int) $user->id, 403);
         $user->last_seen_animal_id = $request->last_seen_animal_id;
         $user->save();
 
