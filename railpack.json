@@ -1,16 +1,22 @@
 {
-    "$schema": "https://schema.railpack.com",
-    "provider": "php",
-    "packages": {
-        "php": "8.4"
-    },
-    "buildAptPackages": [
-        "...",
-        "bison",
-        "re2c",
-        "libonig-dev",
-        "pkg-config",
-        "libzip-dev",
-        "libcurl4-openssl-dev"
+  "$schema": "https://schema.railpack.com",
+  "provider": "php",
+  "packages": {
+    "php": "8.4"
+  },
+  "buildAptPackages": [
+    "...",
+    "bison",
+    "re2c",
+    "libonig-dev",
+    "pkg-config",
+    "libzip-dev",
+    "libcurl4-openssl-dev"
+  ],
+  "deploy": {
+    "aptPackages": [
+      "...",
+      "libpng16-16t64"
     ]
+  }
 }
